@@ -1,15 +1,34 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    namespace 'org.mariotaku.mediaviewer.library.subsampleimageview'
+    compileSdkVersion 30
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 25
+        minSdkVersion 16
+        targetSdkVersion 30
         versionCode 1
         versionName project.version
     }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+
+    compileOptions {
+        encoding = 'UTF-8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -19,6 +38,6 @@ android {
 }
 
 dependencies {
-    compile project(':base')
-    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
+    implementation project(':MediaViewerLibrary:base')
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 }
