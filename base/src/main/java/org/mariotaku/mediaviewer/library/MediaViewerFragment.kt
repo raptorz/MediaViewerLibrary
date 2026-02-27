@@ -68,4 +68,6 @@ abstract class MediaViewerFragment : Fragment() {
     abstract fun isMediaLoading(): Boolean
 
     abstract fun isMediaLoaded(): Boolean
+
+    abstract fun isBarShowing(): Boolean
 }

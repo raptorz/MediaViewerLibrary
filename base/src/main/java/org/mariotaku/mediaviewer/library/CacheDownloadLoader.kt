@@ -151,7 +151,7 @@ class CacheDownloadLoader(
         }
     }
 
-    class Result(val cacheUri: Uri?, val exception: Exception?) {
+    open class Result(val cacheUri: Uri?, val exception: Exception?) {
         companion object {
             fun getInstance(uri: Uri): Result {
                 return Result(uri, null)

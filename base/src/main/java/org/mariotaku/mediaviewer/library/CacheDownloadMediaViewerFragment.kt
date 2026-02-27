@@ -14,16 +14,13 @@ abstract class CacheDownloadMediaViewerFragment : MediaViewerFragment(),
     private val EXTRA_IGNORE_CACHE = "ignore_cache"
 
     private var loaderInitialized = false
-    private var downloadResult: CacheDownloadLoader.Result? = null
+    public var downloadResult: CacheDownloadLoader.Result? = null
 
-    fun hasDownloadedData(): Boolean {
+    open fun hasDownloadedData(): Boolean {
         return downloadResult != null && downloadResult!!.cacheUri != null
     }
 
-    @Nullable
-    fun getDownloadResult(): CacheDownloadLoader.Result? {
-        return downloadResult
-    }
+
 
     override fun onDownloadError(t: Throwable, nonce: Long) {
         if (activity == null || isDetached) return
@@ -102,6 +99,10 @@ abstract class CacheDownloadMediaViewerFragment : MediaViewerFragment(),
 
     @Nullable
     protected abstract fun getDownloadUri(): Uri?
+
+    val downloadUri: Uri?
+        @JvmName("getDownloadUriProperty")
+        get() = getDownloadUri()
 
     @Nullable
     protected abstract fun getDownloadExtra(): Any?

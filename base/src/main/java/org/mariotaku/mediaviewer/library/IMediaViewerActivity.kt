@@ -6,7 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import java.util.Locale
 
 interface IMediaViewerActivity {
-    fun isBarShowing(): Boolean
+    val isBarShowing: Boolean
 
     fun setBarVisibility(visible: Boolean)
 

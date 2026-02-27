@@ -47,6 +47,6 @@ abstract class AbsMediaViewerActivity : AppCompatActivity(), IMediaViewerActivit
     }
 
     override fun toggleBar() {
-        setBarVisibility(!isBarShowing())
+        setBarVisibility(!isBarShowing)
     }
 }

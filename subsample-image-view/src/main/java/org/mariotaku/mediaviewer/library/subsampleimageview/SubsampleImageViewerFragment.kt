@@ -16,7 +16,7 @@ import org.mariotaku.mediaviewer.library.CacheDownloadMediaViewerFragment
 import org.mariotaku.mediaviewer.library.IMediaViewerActivity
 import org.mariotaku.mediaviewer.library.subsampleimageview.databinding.LayoutMediaViewerSubsampleImageViewBinding
 
-class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
+open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
     CacheDownloadLoader.Listener,
     LoaderManager.LoaderCallbacks<CacheDownloadLoader.Result>,
     View.OnClickListener {
@@ -34,15 +34,15 @@ class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
     }
 
     private var _binding: LayoutMediaViewerSubsampleImageViewBinding? = null
-    private val binding get() = _binding!!
+    private val subBinding get() = _binding!!
 
     private var hasPreview = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
-        binding.imageView.setOnClickListener(this)
-        binding.imageView.setOnImageEventListener(object :
+        subBinding.imageView.setOnClickListener(this)
+        subBinding.imageView.setOnImageEventListener(object :
             SubsamplingScaleImageView.DefaultOnImageEventListener() {
 
             private var previewLoadError = false
@@ -74,7 +74,7 @@ class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
                 }
             }
         })
-        setupImageView(binding.imageView)
+        setupImageView(subBinding.imageView)
         startLoading(false)
         showProgress(true, 0f)
         setMediaViewVisible(false)
@@ -86,7 +86,7 @@ class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
         savedInstanceState: Bundle?
     ): View? {
         _binding = LayoutMediaViewerSubsampleImageViewBinding.inflate(inflater, container, false)
-        return binding.root
+        return subBinding.root
     }
 
     override fun onDestroyView() {
@@ -99,6 +99,19 @@ class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
         activity.toggleBar()
     }
 
+    override fun isBarShowing(): Boolean {
+        val activity = activity as? IMediaViewerActivity ?: return false
+        return activity.isBarShowing
+    }
+
+    override fun isMediaLoading(): Boolean {
+        return false
+    }
+
+    override fun isMediaLoaded(): Boolean {
+        return hasDownloadedData()
+    }
+
     override fun onCreateMediaView(
         inflater: LayoutInflater,
         container: ViewGroup,
@@ -106,7 +119,7 @@ class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
     ): View {
         // This method is called from the parent fragment's onCreateView
         // We already have the binding from onCreateView, so we just return the image view
-        return binding.root
+        return subBinding.root
     }
 
     override fun isAbleToLoad(): Boolean {
@@ -128,34 +141,34 @@ class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
             setMediaViewVisible(true)
             val previewSource = getPreviewImageSource(data)
             hasPreview = previewSource != null
-            binding.imageView.setImage(getImageSource(data), previewSource)
+            subBinding.imageView.setImage(getImageSource(data), previewSource)
         } else {
             setMediaViewVisible(false)
         }
     }
 
     @NonNull
-    protected fun getImageSource(@NonNull data: CacheDownloadLoader.Result): ImageSource {
-        requireNotNull(data.cacheUri)
-        val imageSource = ImageSource.uri(data.cacheUri)
+    protected open fun getImageSource(@NonNull data: CacheDownloadLoader.Result): ImageSource {
+        val cacheUri = data.cacheUri ?: error("cacheUri must not be null")
+        val imageSource = ImageSource.uri(cacheUri)
         imageSource.tilingEnabled()
         return imageSource
     }
 
     @Nullable
-    protected fun getPreviewImageSource(@NonNull data: CacheDownloadLoader.Result): ImageSource? {
+    protected open fun getPreviewImageSource(@NonNull data: CacheDownloadLoader.Result): ImageSource? {
         return null
     }
 
     override fun releaseMediaResources() {
-        binding.imageView.recycle()
+        subBinding.imageView.recycle()
     }
 
-    protected fun onMediaLoadStateChange(@State state: Int) {
+    protected open fun onMediaLoadStateChange(@State state: Int) {
         // Subclasses can override this
     }
 
-    protected fun setupImageView(imageView: SubsamplingScaleImageView) {
+    protected open fun setupImageView(imageView: SubsamplingScaleImageView) {
         // Subclasses can override this
     }
 
