@@ -34,12 +34,13 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
     }
 
     private var _binding: LayoutMediaViewerSubsampleImageViewBinding? = null
-    private val subBinding get() = _binding!!
+    private val subBinding get() = _binding ?: throw IllegalStateException("Binding not initialized")
 
     private var hasPreview = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        android.util.Log.d("SubsampleIVF", "onActivityCreated called, view=$view, _binding=$_binding")
         setHasOptionsMenu(true)
         subBinding.imageView.setOnClickListener(this)
         subBinding.imageView.setOnImageEventListener(object :
@@ -75,16 +76,18 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
             }
         })
         setupImageView(subBinding.imageView)
+        android.util.Log.d("SubsampleIVF", "Calling startLoading, downloadUri=${getDownloadUri()}")
         startLoading(false)
         showProgress(true, 0f)
         setMediaViewVisible(false)
     }
 
-    override fun onCreateView(
+    override fun onCreateMediaView(
         inflater: LayoutInflater,
-        container: ViewGroup?,
+        container: ViewGroup,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        android.util.Log.d("SubsampleIVF", "onCreateMediaView called")
         _binding = LayoutMediaViewerSubsampleImageViewBinding.inflate(inflater, container, false)
         return subBinding.root
     }
@@ -100,8 +103,14 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
     }
 
     override fun isBarShowing(): Boolean {
-        val activity = activity as? IMediaViewerActivity ?: return false
-        return activity.isBarShowing
+        return false
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && isAdded) {
+            startLoading(false)
+        }
     }
 
     override fun isMediaLoading(): Boolean {
@@ -110,16 +119,6 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
 
     override fun isMediaLoaded(): Boolean {
         return hasDownloadedData()
-    }
-
-    override fun onCreateMediaView(
-        inflater: LayoutInflater,
-        container: ViewGroup,
-        savedInstanceState: Bundle?
-    ): View {
-        // This method is called from the parent fragment's onCreateView
-        // We already have the binding from onCreateView, so we just return the image view
-        return subBinding.root
     }
 
     override fun isAbleToLoad(): Boolean {
@@ -147,21 +146,19 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
         }
     }
 
-    @NonNull
-    protected open fun getImageSource(@NonNull data: CacheDownloadLoader.Result): ImageSource {
+    protected open fun getImageSource(data: CacheDownloadLoader.Result): ImageSource {
         val cacheUri = data.cacheUri ?: error("cacheUri must not be null")
         val imageSource = ImageSource.uri(cacheUri)
         imageSource.tilingEnabled()
         return imageSource
     }
 
-    @Nullable
-    protected open fun getPreviewImageSource(@NonNull data: CacheDownloadLoader.Result): ImageSource? {
+    protected open fun getPreviewImageSource(data: CacheDownloadLoader.Result): ImageSource? {
         return null
     }
 
     override fun releaseMediaResources() {
-        subBinding.imageView.recycle()
+        _binding?.imageView?.recycle()
     }
 
     protected open fun onMediaLoadStateChange(@State state: Int) {

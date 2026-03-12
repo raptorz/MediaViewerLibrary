@@ -44,7 +44,10 @@ interface IMediaViewerActivity {
         }
 
         fun onContentChanged() {
-            viewPager = (activity as IMediaViewerActivity).findViewPager()
+            val foundViewPager = (activity as IMediaViewerActivity).findViewPager()
+            if (foundViewPager != null) {
+                viewPager = foundViewPager
+            }
         }
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
