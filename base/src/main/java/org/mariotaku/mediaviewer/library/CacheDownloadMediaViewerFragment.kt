@@ -64,7 +64,6 @@ abstract class CacheDownloadMediaViewerFragment : MediaViewerFragment(),
     }
 
     fun startLoading(ignoreCache: Boolean) {
-        android.util.Log.d("CacheDownloadMF", "startLoading called, isAbleToLoad=${isAbleToLoad()}, downloadUri=$downloadUri, isAdded=$isAdded")
         if (!isAbleToLoad()) return
         if (!isAdded) return
         LoaderManager.getInstance(this).destroyLoader(0)
@@ -82,7 +81,6 @@ abstract class CacheDownloadMediaViewerFragment : MediaViewerFragment(),
         loader: Loader<CacheDownloadLoader.Result>,
         data: CacheDownloadLoader.Result
     ) {
-        android.util.Log.d("CacheDownloadMF", "onLoadFinished called, cacheUri=${data.cacheUri}, exception=${data.exception}")
         downloadResult = data
         displayMedia(data)
         hideProgress()

@@ -40,7 +40,6 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        android.util.Log.d("SubsampleIVF", "onActivityCreated called, view=$view, _binding=$_binding")
         setHasOptionsMenu(true)
         subBinding.imageView.setOnClickListener(this)
         subBinding.imageView.setOnImageEventListener(object :
@@ -76,7 +75,6 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
             }
         })
         setupImageView(subBinding.imageView)
-        android.util.Log.d("SubsampleIVF", "Calling startLoading, downloadUri=${getDownloadUri()}")
         startLoading(false)
         showProgress(true, 0f)
         setMediaViewVisible(false)
@@ -87,7 +85,6 @@ open class SubsampleImageViewerFragment : CacheDownloadMediaViewerFragment(),
         container: ViewGroup,
         savedInstanceState: Bundle?
     ): View {
-        android.util.Log.d("SubsampleIVF", "onCreateMediaView called")
         _binding = LayoutMediaViewerSubsampleImageViewBinding.inflate(inflater, container, false)
         return subBinding.root
     }

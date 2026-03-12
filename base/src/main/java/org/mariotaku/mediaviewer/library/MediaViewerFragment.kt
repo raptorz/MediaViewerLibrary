@@ -17,7 +17,6 @@ abstract class MediaViewerFragment : Fragment() {
     }
 
     fun showProgress(indeterminate: Boolean, progress: Float) {
-        android.util.Log.d("MediaViewerFragment", "showProgress called, _binding=$_binding")
         val activity = activity ?: return
         if (binding.loadProgress.visibility != View.VISIBLE) {
             activity.supportInvalidateOptionsMenu()
@@ -40,14 +39,11 @@ abstract class MediaViewerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        android.util.Log.d("MediaViewerFragment", "onCreateView called, fragment=$this")
         _binding = FragmentMediaViewerBinding.inflate(inflater, container, false)
         val mediaView = onCreateMediaView(inflater, binding.mediaContainer, savedInstanceState)
-        android.util.Log.d("MediaViewerFragment", "mediaView=$mediaView, mediaView.parent=${mediaView.parent}")
         if (mediaView.parent == null) {
             binding.mediaContainer.addView(mediaView)
         }
-        android.util.Log.d("MediaViewerFragment", "binding.root=${binding.root}, loadProgress=${binding.loadProgress}")
         return binding.root
     }
 
